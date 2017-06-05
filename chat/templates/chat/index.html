@@ -1,0 +1,21 @@
+{% extends 'chat/base.html' %}
+{% load static %}
+{% block body %}
+<link href="https://fonts.googleapis.com/css?family=Fredoka+One" type="text/css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="{% static 'chat/style.css' %}"/>
+<div class="container">
+    <div class="row">
+        <div class="col-md-8" style="font-family: 'Fredoka One', cursive; font-size: 90px;
+                                    text-shadow: 5px 5px #8c4646; color: #f2e394;">
+            Welcome to SongApp. Please select a user to proceed.
+        </div>
+        <div class="col-md-2 col-md-offset-1">
+            {% for user in  user_list %}
+                <div class="row" style="text-transform: capitalize;">
+                    <h3><a href="{% url 'chat:conversation' user.id %}" style="color: #fff">{{ user.username }}</a></h3>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,156 @@
+{% extends 'chat/base.html' %}
+{% load static %}
+{% block body %}
+
+<script src="{% static 'js/ajax.js' %}"></script>
+<link href="https://fonts.googleapis.com/css?family=Amatic+SC|Open+Sans|Alegreya+Sans+SC:b" type="text/css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="{% static 'chat/style.css' %}"/>
+
+
+<div class="container" id="container">
+    <div class="row">
+        <div class="col-md-3" id="user_list">
+                {% for user in  user_list %}
+                    <div class="row  user_list_row">
+                        <div class="col-md-3">
+                            <img src="{% static 'img/cv-icon-3.png' %}"
+                                 style="height: 57px; width: 51px; padding-top: 5px;">
+                        </div>
+                        <div class="col-md-9" style="cursor: pointer; padding-bottom: 8px;"
+                             onclick="window.location='{% url 'chat:conversation' user.id %}';">
+                            <strong><h3>{{ user.username }}</h3></strong>
+                            <!--<h3><a href="{% url 'chat:conversation' user.id %}">{{ user.username }}</a></h3>-->
+                        </div>
+                    </div>
+                {% endfor %}
+        </div>
+        <div class="col-md-9" id="chats">
+            <div class="col-md-12">
+                <div class="row" id="user_name">{{ receiver }}</div>
+                <div class="row" id="space" style="height: 10px;"></div>
+                <div class="row" id="messages">
+                    <div class="messages">
+                        {% for messages in latest_msg_list %}
+                            {% if request.user == messages.receiver %}
+                                <div class="row" style="border: 1px solid #ffffff;">
+                                    <div class="col-md-3 user_name" align="center">{{ messages.sender }}</div>
+                                    <div class="col-md-6" align="center">
+                                        <div class="audio-player">
+                                            <audio controls>
+                                                <source src="{{ messages.message }}" type="audio/mpeg">
+                                            </audio>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3"></div>
+                                </div>
+                            {% else %}
+                                <div class="row" style="border: 1px solid #ffffff;">
+                                    <div class="col-md-3"></div>
+                                    <div class="col-md-6" align="center">
+                                        <div class="audio-player">
+                                            <audio controls>
+                                                <source src="{{ messages.message }}" type="audio/mpeg">
+                                            </audio>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 user_name" align="center">{{ messages.sender }}</div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="room" id="room">
+    <a class="btn btn-info" id="search-toggle">SG</a>
+    <form>
+        <input type="text" class="search-box" id="search" name="message">
+        <!--<button id="button">OK</button>-->
+    </form>
+</div>
+
+{% csrf_token %}
+<div id="search-res" class="search-res"></div>
+<script>
+    var socket = new WebSocket("ws://" + window.location.host + "/{{ conversation_id }}/");
+
+    socket.onmessage = function(e) {
+        var obj = JSON.parse(e.data);
+        if (obj.conversation === "{{conversation_id}}") {
+            if (obj.username === "{{ request.user }}") {
+                  msg = "<div class='row' style='border: 1px solid #ffffff;'>" +
+                      "<div class='col-md-3'></div>" +
+                      "<div class='col-md-6' align='center'>" +
+                        "<div class='audio-player'>" +
+                            "<audio controls autoplay><source src=" + obj.message + " type='audio/mpeg'></audio></div></div>" +
+                      "<div class='col-md-3 user_name' align='center'>" + obj.username + "</div>" +
+                      "</div>";
+            } else {
+                  msg = "<div class='row' style='border: 1px solid #ffffff;'>" +
+                      "<div class='col-md-3 user_name' align='center'>" + obj.username + "</div>" +
+                      "<div class='col-md-6' align='center'>" +
+                        "<div class='audio-player'>" +
+                        "<audio controls autoplay><source src=" + obj.message + " type='audio/mpeg'></audio></div></div>" +
+                      "<div class='col-md-3'></div>" +
+                      "</div>";
+            }
+        }
+        $("#messages").append(msg);}
+
+    socket.onopen = function() {
+         $("#search-res").on("click", "div.song_list", function(e) {
+                            socket.send(this.id);
+                            });
+
+         $("#search-res").on("click", "img.audio-play-img", function(e) {
+                            return false;
+                            });
+    }
+
+    if (socket.readyState == WebSocket.OPEN) {
+        socket.onopen();
+    }
+
+    $('#search-toggle').click(function() {
+      if($(this).text().trim() == 'SG') {
+        $(this).text('SP');
+        $('#search-toggle').removeClass('btn-info').addClass('btn-danger');
+      } else if($(this).text().trim() == 'SP') {
+        $(this).text('All');
+        $('#search-toggle').removeClass('btn-danger').addClass('btn-warning');
+      } else {
+        $(this).text('SG');
+        $('#search-toggle').removeClass('btn-warning').addClass('btn-info');
+      }
+    });
+
+    $( "#search" ).keyup(function() {
+      results =
+        "<ul id='search-results'></ul>";
+        $( "#search-res" ).css('min-height', '0%');
+        $( "#search-res" ).css('max-height', '30%');
+        $( "#search-res" ).css('width', $( '#container' ).width()+'px');
+        $( "#search-res" ).append(results);
+    });
+
+    $('html').click(function(e) {
+      if(!$(e.target).is('.search-box, .search-res'))
+        {
+         $( "#search-res" ).css('min-height', '0px');
+         $( "#search-res" ).css('max-height', '0px');
+        }
+    });
+
+    $( "div.messages" ).scrollTop( 300 );
+    // $( "#user_list" ).scrollTop( 300 );
+    $( "#search-res" ).scrollTop( 300 );
+
+</script>
+
+{% endblock %}
+
+

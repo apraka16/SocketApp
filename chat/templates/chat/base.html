@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <title>Chat</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Megrim|Lato|Pacifico" type="text/css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'chat/style.css' %}"/>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#" style="color: white;">SongApp</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="{% url 'chat:index' %}" style="background-color: transparent !important; color: white;">Home</a></li>
+                <li><a href="#" style="background-color: transparent !important; color: white;">{{ request.user }}</a></li>
+                {% if request.user.is_authenticated %}
+                    <li><a href="{% url 'logout' %}" style="background-color: transparent !important; color: white;">Log Out</a></li>
+                {% else %}
+                    <li><a href="{% url 'login' %}" style="background-color: transparent !important; color: white;">Log In</a></li>
+                {% endif %}
+                {% if not request.user.is_authenticated %}
+                    <li><a href="{% url 'signup' %}" style="background-color: transparent !important; color: white;">Sign up</a></li>
+                {% endif %}
+            </ul>
+       </div>
+    </nav>
+    {% block body %}
+    {% endblock %}
+</body>
+</html>

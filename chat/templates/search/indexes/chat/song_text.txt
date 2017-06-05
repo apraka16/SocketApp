@@ -1,0 +1,6 @@
+{{ object.song_name }}
+{{ object.song_desc }}
+{{ object.artist }}
+{{ object.album }}
+{{ object.genre }}
+{{ object.category }}

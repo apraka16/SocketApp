@@ -1,0 +1,41 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+{% load static %}
+
+<script>
+    function togglePlay(e) {
+        return e.paused ? e.play() : e.pause();
+        //$( "img" ).attr("src") = e.paused? "{% static 'img/pause_btn.png' %}" : "{% static 'img/play_btn.png' %}";
+    }
+</script>
+
+<link rel="stylesheet" type="text/css" href="{% static 'chat/style.css' %}"/>
+    {% if songs %}
+    {% for song in songs %}
+        <div style='clear: both; float:left;'>
+            <audio id="player_{{ song.object.id }}">
+                <source src="{{ song.object.song.url }}" type="audio/mpeg">
+            </audio>
+            <img src="{% static 'img/play_btn.png' %}" class="audio-play-img"
+                 style="float:left; width:32px; height:32px; padding: 3px; margin: 3px;"
+                 onclick="togglePlay(document.getElementById('player_{{ song.object.id }}'))">
+
+            <div class="song_list" id="{{ song.object.id }}" style='float:left;'>
+                <div class="song_artist">{{ song.object.artist }}</div>
+                <div class="song_name">{{ song.object.song_name }}</div>
+                <div class="song_desc">
+                    {{ song.object.song_desc }}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    {% else %}
+
+
+    <br>
+    <!--<p style="color:red;">Either enter more chars or Nothing to Show in DB</p>-->
+      <div class="alert alert-warning" style="width:40%;">
+        <strong>Warning!</strong> Either enter more chars or not found in DB.
+      </div>
+    {% endif %}

@@ -1,0 +1,36 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link href="https://fonts.googleapis.com/css?family=Megrim|Vollkorn|Pacifico" type="text/css" rel="stylesheet">
+
+<div id="brand-logo" style="font-family: 'Megrim', cursive; font-size: 70px; text-align: center; padding: 20px;">SongApp</div>
+<div style="text-align: center; padding: 20px; font-size: 30px">Log In</div>
+
+<div id="content-container" class="container p-none">
+    <div class="lgn-container col-lg-8 col-lg-offset-2">
+        <form id="login-form" method="post">
+            {% csrf_token %}
+            <table class="table">
+                <tr>
+                    <td><label for="id_username">Username</label></td>
+                    <td><input id="id_username" name="username"
+                               type="text" class="form-control"></td>
+                </tr>
+                <tr>
+                    <td><label for="id_password">Password</label></td>
+                    <td><input id="id_password" name="password"
+                               type="password" class="form-control"></td>
+                </tr>
+            </table>
+            {% if form.errors %}
+                <p class=" label label-danger">
+                    Your username and password didn't match.
+                    Please try again.
+                </p>
+            {% endif %}
+
+            <input type="submit" value="Login"
+                   class="btn btn-primary pull-right" />
+            <input type="hidden" name="next" value="{{ next }}" />
+        </form>
+        <div><a href="{% url 'signup' %}">Signup instead</a></div>
+    </div>
+</div>
