@@ -143,4 +143,9 @@ body                     {background: #588c7e;}
                           text-align: center;
                           width: 1.6em; }
 
+.all_users                {width: 70%;
+                           height: 33px;
+                           text-transform: capitalize;
+                           float: left;}
+
 

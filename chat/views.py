@@ -6,6 +6,7 @@ from django.shortcuts import redirect, render
 from .models import Message, Conversation
 from haystack.query import SearchQuerySet
 from django.contrib.auth.models import User
+from .forms import NetworkForm
 
 
 def signup(request):
@@ -27,7 +28,17 @@ def signup(request):
 @login_required
 def index(request):
     user_list = User.objects.exclude(username=request.user)
-    return render(request, 'chat/index.html', {'user_list': user_list})
+    form = NetworkForm()
+    if request.method == 'POST':
+        form = NetworkForm(request.POST)
+        if form.is_valid():
+            print form.data
+            return redirect(request.META['HTTP_REFERER'])
+
+    return render(request, 'chat/index.html', {
+        'user_list': user_list,
+        'form': form,
+    })
 
 
 @login_required
@@ -69,6 +80,8 @@ def search_song(request):
         }
         return render(request, 'search/search.html', context)
     return render(request, 'search/search.html', {'songs': None})
+
+
 
 
 

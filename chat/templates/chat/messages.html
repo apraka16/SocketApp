@@ -85,7 +85,6 @@
     {% endfor %}
 
     var socket = new WebSocket("ws://" + window.location.host + "/{{ conversation_id }}/");
-    //var count = 0;
     socket.onmessage = function(e) {
         
         var obj = JSON.parse(e.data);
