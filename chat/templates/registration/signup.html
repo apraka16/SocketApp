@@ -2,10 +2,10 @@
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <link href="https://fonts.googleapis.com/css?family=Megrim|Vollkorn|Pacifico" type="text/css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="{% static 'chat/style.css' %}"/>
+<body style="background-color: #fff;">
 <div id="brand-logo" style="font-family: 'Megrim', cursive; font-size: 70px; text-align: center; padding: 20px;">SongApp</div>
 <div style="text-align: center; padding: 20px; font-size: 30px">Sign Up</div>
-<link rel="stylesheet" type="text/css" href="{% static 'chat/style.css' %}"/>
-
 
 <div id="content-container" class="container p-none">
     <div class="lgn-container col-lg-8 col-lg-offset-2">
@@ -60,3 +60,4 @@
         <div><a href="{% url 'login' %}">Login instead</a></div>
     </div>
 </div>
+</body>

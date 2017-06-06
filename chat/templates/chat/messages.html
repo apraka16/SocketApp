@@ -16,11 +16,11 @@
                             <img src="{% static 'img/cv-icon-3.png' %}"
                                  style="height: 57px; width: 51px; padding-top: 5px;">
                         </div>
-                        <div class="col-md-9" style="cursor: pointer; padding-bottom: 8px;"
+                        <div class="col-md-6" style="cursor: pointer; padding-bottom: 8px;"
                              onclick="window.location='{% url 'chat:conversation' user.id %}';">
                             <strong><h3>{{ user.username }}</h3></strong>
-                            <!--<h3><a href="{% url 'chat:conversation' user.id %}">{{ user.username }}</a></h3>-->
                         </div>
+                        <div class="col-md-3" id="notification_{{ user.username }}" style="padding-top: 17px"><div></div></div>
                     </div>
                 {% endfor %}
         </div>
@@ -64,7 +64,6 @@
     </div>
 </div>
 
-
 <div class="room" id="room">
     <a class="btn btn-info" id="search-toggle">SG</a>
     <form>
@@ -75,31 +74,52 @@
 
 {% csrf_token %}
 <div id="search-res" class="search-res"></div>
-<script>
-    var socket = new WebSocket("ws://" + window.location.host + "/{{ conversation_id }}/");
 
+<script>
+    var audioElement = document.createElement('audio');
+    audioElement.setAttribute('src', "{% static 'sounds/notification.mp3' %}");
+
+    var dictionary = {};
+    {% for user in user_list %}
+        dictionary["notification_cnt_{{user.username}}"] = 0;
+    {% endfor %}
+
+    var socket = new WebSocket("ws://" + window.location.host + "/{{ conversation_id }}/");
+    //var count = 0;
     socket.onmessage = function(e) {
+        
         var obj = JSON.parse(e.data);
         if (obj.conversation === "{{conversation_id}}") {
             if (obj.username === "{{ request.user }}") {
-                  msg = "<div class='row' style='border: 1px solid #ffffff;'>" +
+                msg = "<div class='row' style='border: 1px solid #ffffff;'>" +
                       "<div class='col-md-3'></div>" +
                       "<div class='col-md-6' align='center'>" +
                         "<div class='audio-player'>" +
-                            "<audio controls autoplay><source src=" + obj.message + " type='audio/mpeg'></audio></div></div>" +
+                            "<audio controls><source src=" + obj.message + " type='audio/mpeg'></audio></div></div>" +
                       "<div class='col-md-3 user_name' align='center'>" + obj.username + "</div>" +
                       "</div>";
             } else {
-                  msg = "<div class='row' style='border: 1px solid #ffffff;'>" +
+                msg = "<div class='row' style='border: 1px solid #ffffff;'>" +
                       "<div class='col-md-3 user_name' align='center'>" + obj.username + "</div>" +
                       "<div class='col-md-6' align='center'>" +
                         "<div class='audio-player'>" +
                         "<audio controls autoplay><source src=" + obj.message + " type='audio/mpeg'></audio></div></div>" +
                       "<div class='col-md-3'></div>" +
                       "</div>";
+            };
+        $("#messages").append(msg);
+
+        } else {
+            if ((obj.username != "{{ request.user }}") && ("{{ request.user }}" === obj.recipient)) {
+                dictionary['notification_cnt_'+obj.username]++;
+                counter = dictionary['notification_cnt_'+obj.username]
+                $("#notification_"+obj.username).empty();
+                $("#notification_"+obj.username).append("<div class='notification'>"+counter+"</div>");
+                audioElement.play();
             }
         }
-        $("#messages").append(msg);}
+    }
+
 
     socket.onopen = function() {
          $("#search-res").on("click", "div.song_list", function(e) {

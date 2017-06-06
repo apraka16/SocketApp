@@ -79,7 +79,13 @@ class Conversation(models.Model):
         return Group("room")
 
     def send_message(self, message, user):
-        final_msg = {'conversation': str(self.id), 'message': message, 'username': user}
+        conversation = Conversation.objects.get(pk=str(self.id))
+        if  user == conversation.user1.username:
+            recipient = conversation.user2.username
+        else:
+            recipient = conversation.user1.username
+        final_msg = {'conversation': str(self.id), 'message': message, 'username': user, 'recipient': recipient}
+        print final_msg
         self.websocket_group.send(
             {"text": json.dumps(final_msg)}
         )
