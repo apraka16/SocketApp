@@ -5,10 +5,24 @@
 <link rel="stylesheet" type="text/css" href="{% static 'chat/style.css' %}"/>
 <div class="container">
     <div class="row">
-            <div class="col-md-7" style="font-family: 'Fredoka One', cursive; font-size: 90px;
+            <div class="col-md-7">
+                <div class="row" style="font-family: 'Fredoka One', cursive; font-size: 90px;
                                     text-shadow: 5px 5px #8c4646; color: #f2e394;">
-                Welcome to SongApp. We're sure glad you're in.
+                    Welcome to SongApp.</div>
+                <br>
+                <br>
+                <br>
+                <div class="row" style="font-family: 'Fredoka One', cursive; font-size: 50px;
+                                    text-shadow: 5px 5px #8c4646; color: #f2e394;">
+                    Made with a heart </div>
+                <div class="row" style="font-family: 'Fredoka One', cursive; font-size: 50px;
+                                    text-shadow: 5px 5px #8c4646; color: #f2e394;">
+                    and some lines of codes,</div>
+                <div class="row" style="font-family: 'Fredoka One', cursive; font-size: 50px;
+                                    text-shadow: 5px 5px #8c4646; color: #f2e394;">
+                     just for you!</div>
             </div>
+
         <div class="col-md-3 col-md-offset-1">
             <div class="row"
                  style="text-shadow: 2px 2px 3px #8c4646; color: #f2e394;">
@@ -23,6 +37,9 @@
             <br>
             <div class="row" style="text-shadow: 2px 2px 3px #8c4646; color: #f2e394;">
                 <h2>My Network</h2>
+                <div style="text-shadow: 2px 2px 3px #8c4646; color: #cce5cc;">
+                    <h5>Add users to your network from above</h5>
+                </div>
             </div>
             {% for user in  user_list %}
                 <div class="row" style="text-transform: capitalize;">
@@ -37,6 +54,8 @@
     {% for user in user_list %}
         $('#select_user').append("<option value={{user.username}}>{{user.username}}</option>");
     {% endfor %}
+
+
 </script>
 
 {% endblock %}

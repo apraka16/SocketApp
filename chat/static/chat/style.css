@@ -143,11 +143,23 @@ body                     {background: #588c7e;}
                           text-align: center;
                           width: 1.6em; }
 
-.all_users               {
-                          width: calc(100% - 100px);
+.all_users               {width: calc(100% - 100px);
                           margin-right: 2%;
                           height: 34px;
                           text-transform: capitalize;
                           float: left;}
+
+.error input, .error select {
+    border: 2px orange solid;
+}
+
+.errorlist               {color: white;
+                          font-style: italic;
+                          font-size: 12px;
+                          margin-left: -40px;
+                          margin-right: 20px;}
+
+ul.errorlist             {list-style-type: none;
+                          }
 
 
