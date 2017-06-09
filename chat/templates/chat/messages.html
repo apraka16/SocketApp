@@ -4,7 +4,9 @@
 
 <script src="{% static 'js/ajax.js' %}"></script>
 <link href="https://fonts.googleapis.com/css?family=Amatic+SC|Open+Sans|Alegreya+Sans+SC:b" type="text/css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="{% static 'chat/audio_switch.css' %}"/>
 <link rel="stylesheet" type="text/css" href="{% static 'chat/style.css' %}"/>
+
 
 
 <div class="container" id="container">
@@ -26,17 +28,29 @@
         </div>
         <div class="col-md-9" id="chats">
             <div class="col-md-12">
-                <div class="row" id="user_name">{{ receiver }}</div>
+                <div class="row" id="user_name">
+                    <div class="col-md-10">{{ receiver }}</div>
+                    <div class="col-md-2">
+                        <label class="switch">
+                            <input type="checkbox">
+                            <div class="slider round"></div>
+                        </label>
+                    </div>
+                </div>
                 <div class="row" id="space" style="height: 10px;"></div>
                 <div class="row" id="messages">
                     <div class="messages">
                         {% for messages in latest_msg_list %}
                             {% if request.user == messages.receiver %}
-                                <div class="row" style="border: 1px solid #ffffff;">
+                                <div class="row" style="border: 1px solid #ffffff; background-color: #B0B4B7;">
+                                    <div class="col-md-1">
+                                        <input type="checkbox"
+                                               style="margin-top: 15px; margin-left: 20px;">
+                                    </div>
                                     <div class="col-md-3 user_name" align="center">{{ messages.sender }}</div>
-                                    <div class="col-md-6" align="center">
+                                    <div class="col-md-5" align="center">
                                         <div class="audio-player">
-                                            <audio controls>
+                                            <audio controls style="margin-top: 5px;">
                                                 <source src="{{ messages.message }}" type="audio/mpeg">
                                             </audio>
                                         </div>
@@ -45,10 +59,14 @@
                                 </div>
                             {% else %}
                                 <div class="row" style="border: 1px solid #ffffff;">
+                                    <div class="col-md-1">
+                                        <input type="checkbox"
+                                               style="margin-top: 15px; margin-left: 20px;">
+                                    </div>
                                     <div class="col-md-3"></div>
-                                    <div class="col-md-6" align="center">
+                                    <div class="col-md-5" align="center">
                                         <div class="audio-player">
-                                            <audio controls>
+                                            <audio controls style="margin-top: 5px;">
                                                 <source src="{{ messages.message }}" type="audio/mpeg">
                                             </audio>
                                         </div>
@@ -85,25 +103,28 @@
     {% endfor %}
 
     var socket = new WebSocket("ws://" + window.location.host + "/{{ conversation_id }}/");
-    //var count = 0;
     socket.onmessage = function(e) {
         
         var obj = JSON.parse(e.data);
         if (obj.conversation === "{{conversation_id}}") {
             if (obj.username === "{{ request.user }}") {
                 msg = "<div class='row' style='border: 1px solid #ffffff;'>" +
+                      "<div class='col-md-1'>" +
+                      "<input type='checkbox' style='margin-top: 15px; margin-left: 20px;'></div>" +
                       "<div class='col-md-3'></div>" +
-                      "<div class='col-md-6' align='center'>" +
+                      "<div class='col-md-5' align='center'>" +
                         "<div class='audio-player'>" +
-                            "<audio controls><source src=" + obj.message + " type='audio/mpeg'></audio></div></div>" +
+                            "<audio controls style='margin-top: 5px;'><source src=" + obj.message + " type='audio/mpeg'></audio></div></div>" +
                       "<div class='col-md-3 user_name' align='center'>" + obj.username + "</div>" +
                       "</div>";
             } else {
-                msg = "<div class='row' style='border: 1px solid #ffffff;'>" +
+                msg = "<div class='row' style='border: 1px solid #ffffff; background-color: #B0B4B7;'>" +
+                      "<div class='col-md-1'>" +
+                      "<input type='checkbox' style='margin-top: 15px; margin-left: 20px;'></div>" +
                       "<div class='col-md-3 user_name' align='center'>" + obj.username + "</div>" +
-                      "<div class='col-md-6' align='center'>" +
+                      "<div class='col-md-5' align='center'>" +
                         "<div class='audio-player'>" +
-                        "<audio controls autoplay><source src=" + obj.message + " type='audio/mpeg'></audio></div></div>" +
+                        "<audio controls autoplay style='margin-top: 5px;'><source src=" + obj.message + " type='audio/mpeg'></audio></div></div>" +
                       "<div class='col-md-3'></div>" +
                       "</div>";
             };

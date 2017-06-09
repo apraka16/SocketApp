@@ -7,6 +7,7 @@ urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^(?P<user_id>[0-9]+)/$', views.fetch_conversation, name='conversation'),
     url(r'^search/$', views.search_song, name='search_song'),
+    # url(r'^add_user/$', views.index, name='add_user'),
 
     url(r'^api/', include('chat.api.urls', namespace='chat-api')),
 ]

@@ -24,9 +24,7 @@
             <div class="song_list" id="{{ song.object.id }}" style='float:left;'>
                 <div class="song_artist">{{ song.object.artist }}</div>
                 <div class="song_name">{{ song.object.song_name }}</div>
-                <div class="song_desc">
-                    {{ song.object.song_desc }}
-                </div>
+                <div class="song_desc">{{ song.object.song_desc }}</div>
             </div>
         </div>
     {% endfor %}
@@ -34,8 +32,7 @@
 
 
     <br>
-    <!--<p style="color:red;">Either enter more chars or Nothing to Show in DB</p>-->
-      <div class="alert alert-warning" style="width:40%;">
+    <div class="alert alert-warning" style="width:40%;">
         <strong>Warning!</strong> Either enter more chars or not found in DB.
-      </div>
+    </div>
     {% endif %}
