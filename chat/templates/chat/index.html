@@ -50,12 +50,11 @@
     </div>
 </div>
 
+
 <script>
     {% for user in user_list %}
         $('#select_user').append("<option value={{user.username}}>{{user.username}}</option>");
     {% endfor %}
-
-
 </script>
 
 {% endblock %}

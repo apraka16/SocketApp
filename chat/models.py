@@ -85,7 +85,6 @@ class Conversation(models.Model):
         else:
             recipient = conversation.user1.username
         final_msg = {'conversation': str(self.id), 'message': message, 'username': user, 'recipient': recipient}
-        print final_msg
         self.websocket_group.send(
             {"text": json.dumps(final_msg)}
         )

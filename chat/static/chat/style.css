@@ -150,8 +150,7 @@ body                     {background: #588c7e;}
                           float: left;}
 
 .error input, .error select {
-    border: 2px orange solid;
-}
+                          border: 2px orange solid;}
 
 .errorlist               {color: white;
                           font-style: italic;
@@ -161,5 +160,3 @@ body                     {background: #588c7e;}
 
 ul.errorlist             {list-style-type: none;
                           }
-
-

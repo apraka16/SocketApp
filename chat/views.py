@@ -1,12 +1,14 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import UserCreationForm
+from django.http import Http404
 from django.db.models import Q
 from django.shortcuts import redirect, render
 from .models import Message, Conversation
 from haystack.query import SearchQuerySet
 from django.contrib.auth.models import User
 from .forms import NetworkForm
+import datetime
 
 
 def signup(request):
@@ -84,6 +86,7 @@ def index(request):
     user_list = User.objects.filter(id__in=network_users_id)
 
     """ Creating drop-down form """
+
     # @TODO: error catching while form usage
 
     # 2
@@ -95,12 +98,15 @@ def index(request):
             # print int(form.data['user_id'])
             user_obj = User.objects.get(pk=form.data['user_id'])
             print user_obj
-            try:  # Try should never be used since conversation would not exist without user adding users
+            try:  # Try probably be used > Try is actually used when user's page is not refreshed.
+                # Results in error help-text
                 conversation = Conversation.objects.get(
                     (Q(user1=request.user) & Q(user2=user_obj)) | (Q(user1=user_obj) & Q(user2=request.user)))
             except Conversation.DoesNotExist:
                 conversation = Conversation(user1=request.user, user2=user_obj)
                 conversation.save()
+
+    # @TODO: possible hacks here needs to be figured out (url requests, etc.)
 
             return redirect(request.META['HTTP_REFERER'])
 
@@ -146,12 +152,20 @@ def fetch_conversation(request, user_id):
     try:
         conversation = Conversation.objects.get(
             (Q(user1=request.user) & Q(user2=user_obj)) | (Q(user1=user_obj) & Q(user2=request.user)))
-    except Conversation.DoesNotExist:  # This logic should never be used since only networked users are shown in left
-        conversation = Conversation(user1=request.user, user2=user_obj)
-        conversation.save()
+    except Conversation.DoesNotExist:  # This logic should never be used since only networked users are shown in left >
+        # The logic is being used sadly when user brute-force it through url
+            raise Http404("User needs to be added first mate!")
 
     # 3
-    latest_msg_list = Message.objects.filter(conversation=conversation).order_by('created_at')
+    count_msg = Message.objects.filter(conversation=conversation).count()
+    if count_msg > 5:
+        print datetime.datetime.now()
+        latest_msg_list = Message.objects.filter(conversation=conversation).order_by('created_at')[count_msg-5:]
+        print datetime.datetime.now()
+    else:
+        print datetime.datetime.now()
+        latest_msg_list = Message.objects.filter(conversation=conversation).order_by('created_at')
+        print datetime.datetime.now()
 
     # 4
     conv_obj = Conversation.objects.get(pk=conversation.id)
